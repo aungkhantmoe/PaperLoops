@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "subject": "PSLE Standard Mathematics",
+  "years_available": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "source_documents": 4,
+  "expected_questions_before_review": 188,
+  "source_format": {
+    "paper_1_marks": 45,
+    "paper_2_marks": 55,
+    "questions_per_year": 47
+  },
+  "generation_policy": {
+    "allowed_uses": [
+      "identify syllabus coverage",
+      "estimate question difficulty",
+      "learn question structures",
+      "learn worked-solution and method-mark patterns"
+    ],
+    "prohibited_uses": [
+      "serve unreviewed extracted questions to students",
+      "present the supplied PDFs as verified official SEAB files",
+      "copy questions verbatim into generated papers without rights clearance",
+      "use the pre-2026 paper structure for Exam Mode"
+    ],
+    "exam_mode_target": {
+      "effective_from": 2026,
+      "paper_1_marks": 50,
+      "paper_2_marks": 50,
+      "total_questions": 45,
+      "syllabus_reference": "psle-math-syllabus.json"
+    }
+  },
+  "review_pipeline": [
+    "extract each question and its answer",
+    "crop or recreate required diagrams",
+    "verify mathematical notation and units",
+    "validate answers and marking steps",
+    "tag syllabus strand, topic, paper, item type, marks and difficulty",
+    "approve the record for generation or practice use"
+  ]
+}
+

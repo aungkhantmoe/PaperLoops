@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "received_on": "2026-07-21",
+  "collection": {
+    "name": "User-supplied PSLE Standard Mathematics papers with answers",
+    "years_received": [
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "documents_received": 4,
+    "provenance": "Supplied by the PaperLoop project owner",
+    "official_status": "unverified",
+    "rights_review_required_before_public_distribution": true
+  },
+  "documents": [
+    {
+      "id": "psle-standard-math-2022-user-supplied",
+      "year": 2022,
+      "subject": "PSLE Standard Mathematics",
+      "original_filename": "PSLE-standard-math-paper-1-2-questions-with-answers-2022.pdf",
+      "local_path": "knowledge-base/raw/past-papers/2022/psle-standard-math-paper-1-2-with-answers.pdf",
+      "sha256": "efcf5d8568a631b294464a40f9b29b22da4b9eb6a3d35e9d68f9bfa04d86bd47",
+      "file_size_bytes": 211976,
+      "pages": 31,
+      "page_size": "US Letter",
+      "paper_1_start_page": 1,
+      "paper_2_start_page": 14,
+      "answer_key_start_page": 27,
+      "text_layer": "available",
+      "diagrams": "present",
+      "worked_answer_key": "present"
+    },
+    {
+      "id": "psle-standard-math-2023-user-supplied",
+      "year": 2023,
+      "subject": "PSLE Standard Mathematics",
+      "original_filename": "PSLE-standard-math-paper-1-2-questions-with-answers-2023.pdf",
+      "local_path": "knowledge-base/raw/past-papers/2023/psle-standard-math-paper-1-2-with-answers.pdf",
+      "sha256": "0664f77ff4c2530e8bc424587ba161f8ffb8a7d296a3f1b8523a0addccf14f57",
+      "file_size_bytes": 710514,
+      "pages": 31,
+      "page_size": "A4",
+      "paper_1_start_page": 1,
+      "paper_2_start_page": 13,
+      "answer_key_start_page": 24,
+      "text_layer": "available",
+      "diagrams": "present",
+      "worked_answer_key": "present"
+    },
+    {
+      "id": "psle-standard-math-2024-user-supplied",
+      "year": 2024,
+      "subject": "PSLE Standard Mathematics",
+      "original_filename": "PSLE-standard-math-paper-1-2-questions-with-answers-2024.pdf",
+      "local_path": "knowledge-base/raw/past-papers/2024/psle-standard-math-paper-1-2-with-answers.pdf",
+      "sha256": "93f2948270cd0680ea5e85fa5d7834621384009098fc02c46233b7bd1c219875",
+      "file_size_bytes": 665451,
+      "pages": 31,
+      "page_size": "A4",
+      "paper_1_start_page": 1,
+      "paper_2_start_page": 14,
+      "answer_key_start_page": 28,
+      "text_layer": "available",
+      "diagrams": "present",
+      "worked_answer_key": "present"
+    },
+    {
+      "id": "psle-standard-math-2025-user-supplied",
+      "year": 2025,
+      "subject": "PSLE Standard Mathematics",
+      "original_filename": "PSLE-standard-math-paper-1-2-questions-with-answers-2025.pdf",
+      "local_path": "knowledge-base/raw/past-papers/2025/psle-standard-math-paper-1-2-with-answers.pdf",
+      "sha256": "7257dbbe820ff30e13ac01d832a10c9c761807880862c6818eb71014f33f3b8f",
+      "file_size_bytes": 939475,
+      "pages": 32,
+      "page_size": "A4",
+      "paper_1_start_page": 1,
+      "paper_2_start_page": 14,
+      "answer_key_start_page": 28,
+      "text_layer": "available",
+      "diagrams": "present",
+      "worked_answer_key": "present"
+    }
+  ],
+  "shared_source_format": {
+    "effective_years": "2022-2025",
+    "paper_1": {
+      "marks": 45,
+      "questions": 30,
+      "calculator_allowed": false
+    },
+    "paper_2": {
+      "marks": 55,
+      "questions": 17,
+      "calculator_allowed": true
+    },
+    "total_marks": 100,
+    "total_questions_per_year": 47
+  },
+  "ingestion_status": {
+    "source_files_copied": true,
+    "metadata_verified": true,
+    "representative_pages_visually_reviewed": true,
+    "per_question_extraction": "pending",
+    "answer_validation": "pending",
+    "syllabus_tagging": "pending",
+    "diagram_recreation": "pending"
+  },
+  "quality_notes": [
+    "The PDFs are readable, unencrypted and contain selectable text.",
+    "The answer sections include worked methods and M1/A1 marking annotations.",
+    "Some question pages may contain answer annotations because the supplied files are combined question-and-answer editions.",
+    "The documents are user-supplied and should not be labelled as official SEAB source files without provenance verification."
+  ]
+}
+
