@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 
 type Screen =
   | "tour"
@@ -123,12 +123,15 @@ function Tour({ onFinish }: { onFinish: () => void }) {
 function Assessment({ onComplete }: { onComplete: () => void }) {
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<Array<{ answer: string; snapshot: string }>>([]);
   const [hasWorking, setHasWorking] = useState(false);
+  const padRef = useRef<HandwritingPadHandle>(null);
   const q = assessmentQuestions[index];
   const continueAssessment = () => {
     if (!answer.trim() || !hasWorking) return;
-    const next = [...answers, answer.trim()];
+    const snapshot = padRef.current?.snapshot();
+    if (!snapshot) return;
+    const next = [...answers, { answer: answer.trim(), snapshot }];
     setAnswers(next);
     setAnswer("");
     setHasWorking(false);
@@ -154,16 +157,17 @@ function Assessment({ onComplete }: { onComplete: () => void }) {
           <span>Show your working</span>
           <small>Use a mouse, touchscreen, or stylus.</small>
         </div>
-        <HandwritingPad key={index} compact onInkChange={setHasWorking} />
+        <HandwritingPad key={index} ref={padRef} compact onInkChange={setHasWorking} />
         <label className="assessment-final-answer">
           <span>Final answer</span>
           <div><input value={answer} onChange={(event) => setAnswer(event.target.value)} inputMode="text" placeholder="Type only your final answer" />{q.unit && <em>{q.unit}</em>}</div>
+          <small className="capture-note">Your working is captured only when you click {index === 9 ? "See my tier" : "Next question"}.</small>
         </label>
         <div className="assessment-footer">
           <button
             className="secondary-button"
             disabled={index === 0}
-            onClick={() => { setIndex(index - 1); setAnswer(answers[index - 1] ?? ""); setAnswers(answers.slice(0, -1)); setHasWorking(false); }}
+            onClick={() => { setIndex(index - 1); setAnswer(answers[index - 1]?.answer ?? ""); setAnswers(answers.slice(0, -1)); setHasWorking(false); }}
           >Back</button>
           <span>Your working helps us understand how you think.</span>
           <button className="primary-button" disabled={!answer.trim() || !hasWorking} onClick={continueAssessment}>
@@ -288,13 +292,31 @@ function Dashboard({
 }
 
 type Stroke = { tool: "pen" | "eraser"; points: Array<{ x: number; y: number }> };
+type HandwritingPadHandle = { snapshot: () => string | null };
+type HandwritingPadProps = { compact?: boolean; onInkChange?: (hasInk: boolean) => void };
 
-function HandwritingPad({ compact = false, onInkChange }: { compact?: boolean; onInkChange?: (hasInk: boolean) => void }) {
+const HandwritingPad = forwardRef<HandwritingPadHandle, HandwritingPadProps>(function HandwritingPad({ compact = false, onInkChange }, ref) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [tool, setTool] = useState<"pen" | "eraser">("pen");
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const drawing = useRef(false);
   const activeStroke = useRef<Stroke | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    snapshot: () => {
+      const source = canvasRef.current;
+      if (!source) return null;
+      const output = document.createElement("canvas");
+      output.width = source.width;
+      output.height = source.height;
+      const context = output.getContext("2d");
+      if (!context) return null;
+      context.fillStyle = "#fffdf8";
+      context.fillRect(0, 0, output.width, output.height);
+      context.drawImage(source, 0, 0);
+      return output.toDataURL("image/png");
+    },
+  }), []);
 
   const render = useCallback(() => {
     const canvas = canvasRef.current;
@@ -382,11 +404,17 @@ function HandwritingPad({ compact = false, onInkChange }: { compact?: boolean; o
       </div>
     </div>
   );
-}
+});
 
 function Practice({ onSubmit, onBack }: { onSubmit: () => void; onBack: () => void }) {
   const [answer, setAnswer] = useState("");
   const [hasWorking, setHasWorking] = useState(false);
+  const padRef = useRef<HandwritingPadHandle>(null);
+  const submitPractice = () => {
+    if (!answer.trim() || !hasWorking) return;
+    const snapshot = padRef.current?.snapshot();
+    if (snapshot) onSubmit();
+  };
   return (
     <main className="practice-shell">
       <header className="practice-header"><Logo /><div className="practice-progress"><span>Question 3 of 5</span><div><i /></div></div><button className="text-button" onClick={onBack}>Save & exit</button></header>
@@ -397,8 +425,8 @@ function Practice({ onSubmit, onBack }: { onSubmit: () => void; onBack: () => vo
             <h1>A water tank was <b>3/5</b> full. After 24 litres of water were added, it was <b>3/4</b> full. What was the capacity of the tank?</h1>
             <button className="hint-link">Need a small hint?</button>
           </div>
-          <HandwritingPad onInkChange={setHasWorking} />
-          <div className="final-answer-bar"><label>Final answer <div><input value={answer} onChange={(e) => setAnswer(e.target.value)} inputMode="decimal" placeholder="Type your answer" /><span>litres</span></div></label><button className="primary-button" disabled={!answer.trim() || !hasWorking} onClick={onSubmit}>Check my work</button></div>
+          <HandwritingPad ref={padRef} onInkChange={setHasWorking} />
+          <div className="final-answer-bar"><label>Final answer <div><input value={answer} onChange={(e) => setAnswer(e.target.value)} inputMode="decimal" placeholder="Type your answer" /><span>litres</span></div><small className="capture-note">Working is captured when you click Check my work.</small></label><button className="primary-button" disabled={!answer.trim() || !hasWorking} onClick={submitPractice}>Check my work</button></div>
         </section>
         <aside className="practice-side">
           <span className="eyebrow">Today’s focus</span><h2>Fractions</h2>
@@ -417,6 +445,12 @@ function Practice({ onSubmit, onBack }: { onSubmit: () => void; onBack: () => vo
 function PracticeFeedback({ onLevelUp }: { onLevelUp: () => void }) {
   const [exitAnswer, setExitAnswer] = useState("");
   const [hasExitWorking, setHasExitWorking] = useState(false);
+  const padRef = useRef<HandwritingPadHandle>(null);
+  const finishSet = () => {
+    if (!exitAnswer.trim() || !hasExitWorking) return;
+    const snapshot = padRef.current?.snapshot();
+    if (snapshot) onLevelUp();
+  };
   return (
     <main className="feedback-shell">
       <header className="practice-header"><Logo /><div className="quiet-badge">Question review</div><span /></header>
@@ -438,8 +472,8 @@ function PracticeFeedback({ onLevelUp }: { onLevelUp: () => void }) {
         </div>
         <section className="exit-ticket">
           <div><span className="eyebrow">Quick confidence check</span><h2>If 2/9 of a container is 18 litres, what is its full capacity?</h2></div>
-          <HandwritingPad compact onInkChange={setHasExitWorking} />
-          <div className="exit-answer"><label>Final answer</label><input placeholder="Type your answer" value={exitAnswer} onChange={(event) => setExitAnswer(event.target.value)} /><span>litres</span><button className="success-button" disabled={!exitAnswer.trim() || !hasExitWorking} onClick={onLevelUp}>Finish set</button></div>
+          <HandwritingPad ref={padRef} compact onInkChange={setHasExitWorking} />
+          <div className="exit-answer"><label>Final answer<small className="capture-note">Snapshot on Finish set</small></label><input placeholder="Type your answer" value={exitAnswer} onChange={(event) => setExitAnswer(event.target.value)} /><span>litres</span><button className="success-button" disabled={!exitAnswer.trim() || !hasExitWorking} onClick={finishSet}>Finish set</button></div>
         </section>
       </div>
     </main>
@@ -468,6 +502,15 @@ function Exam({ onSubmit }: { onSubmit: () => void }) {
   const [question, setQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [working, setWorking] = useState<Record<number, boolean>>({});
+  const padRef = useRef<HandwritingPadHandle>(null);
+  const snapshots = useRef<Record<number, string>>({});
+  const captureCurrentQuestion = () => {
+    if (!answers[question]?.trim() || !working[question]) return false;
+    const snapshot = padRef.current?.snapshot();
+    if (!snapshot) return false;
+    snapshots.current[question] = snapshot;
+    return true;
+  };
   const questions = [
     "A shop reduced the price of a bag from $80 to $68. What was the percentage discount?",
     "The average mass of 5 parcels was 3.2 kg. A sixth parcel of mass 4.4 kg was added. Find the new average mass.",
@@ -483,9 +526,9 @@ function Exam({ onSubmit }: { onSubmit: () => void }) {
         <section className="exam-question">
           <div className="exam-question-meta"><span>Question {question + 1}</span><span>{question === 3 ? "5 marks" : "3 marks"}</span></div>
           <h1>{questions[question] ?? "This question will be available in the complete paper."}</h1>
-          <HandwritingPad key={question} compact onInkChange={(hasInk) => setWorking((current) => current[question] === hasInk ? current : { ...current, [question]: hasInk })} />
-          <label className="exam-final-answer">Final answer <div><input value={answers[question] ?? ""} onChange={(e) => setAnswers({ ...answers, [question]: e.target.value })} placeholder="Enter your answer" /><span>{question === 0 ? "%" : ""}</span></div></label>
-          <div className="exam-controls"><button className="secondary-button" disabled={question === 0} onClick={() => setQuestion(question - 1)}>Previous</button>{question < 4 ? <button className="primary-button" disabled={!answers[question]?.trim() || !working[question]} onClick={() => setQuestion(question + 1)}>Next question</button> : <button className="submit-exam-button" disabled={!answers[question]?.trim() || !working[question]} onClick={onSubmit}>Submit exam</button>}</div>
+          <HandwritingPad key={question} ref={padRef} compact onInkChange={(hasInk) => setWorking((current) => current[question] === hasInk ? current : { ...current, [question]: hasInk })} />
+          <label className="exam-final-answer">Final answer <div><input value={answers[question] ?? ""} onChange={(e) => setAnswers({ ...answers, [question]: e.target.value })} placeholder="Enter your answer" /><span>{question === 0 ? "%" : ""}</span></div><small className="capture-note">Working is captured only when you continue or submit.</small></label>
+          <div className="exam-controls"><button className="secondary-button" disabled={question === 0} onClick={() => setQuestion(question - 1)}>Previous</button>{question < 4 ? <button className="primary-button" disabled={!answers[question]?.trim() || !working[question]} onClick={() => { if (captureCurrentQuestion()) setQuestion(question + 1); }}>Next question</button> : <button className="submit-exam-button" disabled={!answers[question]?.trim() || !working[question]} onClick={() => { if (captureCurrentQuestion()) onSubmit(); }}>Submit exam</button>}</div>
         </section>
       </div>
     </main>

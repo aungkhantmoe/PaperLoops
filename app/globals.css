@@ -91,6 +91,7 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .assessment-final-answer > div { display: flex; width: min(100%, 430px); height: 46px; overflow: hidden; border: 1px solid var(--line); border-radius: 11px; background: white; }
 .assessment-final-answer input { min-width: 0; flex: 1; padding: 0 14px; border: 0; outline: 0; color: var(--ink); text-transform: none; }
 .assessment-final-answer em { display: flex; padding: 0 13px; align-items: center; background: #f0f1ed; color: var(--muted); font-size: 10px; font-style: normal; text-transform: none; }
+.capture-note { display: block; margin-top: 5px; color: #829088; font-size: 9px; font-weight: 550; letter-spacing: 0; line-height: 1.35; text-transform: none; }
 .answer-options { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
 .answer-option { display: flex; min-height: 64px; padding: 12px 16px; align-items: center; gap: 13px; border: 1px solid var(--line); border-radius: 14px; background: white; cursor: pointer; font-weight: 650; text-align: left; }
 .answer-option span { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: #f0f1ed; color: var(--muted); font-size: 13px; }
