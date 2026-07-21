@@ -53,3 +53,8 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# Original curriculum and examination documents are kept locally.
+# Commit processed, structured knowledge instead of binary source files.
+/knowledge-base/raw/**/*.pdf
+/knowledge-base/raw/**/*.docx

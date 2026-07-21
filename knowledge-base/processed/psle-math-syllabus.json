@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "subject": {
+    "name": "PSLE Mathematics",
+    "level": "Primary 6",
+    "course": "Standard",
+    "subject_code": "0008",
+    "jurisdiction": "Singapore",
+    "effective_from": 2026
+  },
+  "source_ids": [
+    "moe-primary-mathematics-2021-oct-2025",
+    "seab-psle-mathematics-0008-from-2026"
+  ],
+  "curriculum": {
+    "name": "2021 Primary Mathematics Syllabus",
+    "scope_note": "The PSLE assesses attainment at the end of primary education. Primary 6 uses the 2021 syllabus from 2026, so paper generation must include prerequisite content learned in earlier primary levels as well as the Primary 6 content below.",
+    "domains": [
+      {
+        "id": "number-and-algebra",
+        "name": "Number and Algebra",
+        "cumulative_strands": [
+          "whole-numbers",
+          "fractions",
+          "decimals",
+          "percentage",
+          "ratio",
+          "rate",
+          "algebra"
+        ],
+        "primary_6_content": [
+          {
+            "strand": "fractions",
+            "topic": "Four Operations",
+            "learning_outcomes": [
+              "Divide a proper fraction by a whole number without a calculator.",
+              "Divide a whole number or proper fraction by a proper fraction without a calculator."
+            ]
+          },
+          {
+            "strand": "percentage",
+            "topic": "Percentage",
+            "learning_outcomes": [
+              "Find the whole when a part and the percentage are given.",
+              "Find percentage increase and percentage decrease."
+            ]
+          },
+          {
+            "strand": "ratio",
+            "topic": "Ratio",
+            "learning_outcomes": [
+              "Use, represent and interpret a:b and a:b:c where a, b and c are whole numbers, excluding ratios involving fractions and decimals.",
+              "Recognise and form equivalent ratios.",
+              "Divide a quantity in a given ratio.",
+              "Express a ratio in its simplest form.",
+              "Find the ratio of two or three given quantities.",
+              "Find a missing term in a pair of equivalent ratios.",
+              "Understand the relationship between fraction and ratio."
+            ]
+          },
+          {
+            "strand": "algebra",
+            "topic": "Algebra",
+            "learning_outcomes": [
+              "Use a letter to represent an unknown number.",
+              "Use, represent and interpret simple algebraic expressions involving addition, subtraction, multiplication and division.",
+              "Simplify simple linear expressions without brackets.",
+              "Evaluate simple linear expressions by substitution.",
+              "Solve simple linear equations involving whole-number coefficients only."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "measurement-and-geometry",
+        "name": "Measurement and Geometry",
+        "cumulative_strands": [
+          "length-mass-and-volume",
+          "time",
+          "money",
+          "area-and-volume",
+          "angles",
+          "geometry"
+        ],
+        "primary_6_content": [
+          {
+            "strand": "area-and-volume",
+            "topic": "Area and Circumference of Circle",
+            "learning_outcomes": [
+              "Find the area and circumference of a circle.",
+              "Find the area and perimeter of a semicircle and a quarter circle.",
+              "Find the area and perimeter of composite figures made from squares, rectangles, triangles, semicircles and quarter circles."
+            ]
+          },
+          {
+            "strand": "area-and-volume",
+            "topic": "Volume of Cube and Cuboid",
+            "learning_outcomes": [
+              "Find one dimension of a cuboid when its volume and the other dimensions are given.",
+              "Find the length of one edge of a cube when its volume is given.",
+              "Find the height of a cuboid when its volume and base area are given.",
+              "Find the area of a face of a cuboid when its volume and one dimension are given.",
+              "Use square and cube roots in the relevant volume problems."
+            ]
+          },
+          {
+            "strand": "geometry",
+            "topic": "Special Quadrilaterals",
+            "learning_outcomes": [
+              "Find unknown angles, without constructing additional lines, in composite figures involving squares, rectangles, triangles, parallelograms, rhombuses and trapeziums."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "statistics",
+        "name": "Statistics",
+        "cumulative_strands": [
+          "data-representation-and-interpretation",
+          "data-analysis"
+        ],
+        "primary_6_content": [
+          {
+            "strand": "data-analysis",
+            "topic": "Average of a Set of Data",
+            "learning_outcomes": [
+              "Understand average as total value divided by the number of data values.",
+              "Use the relationship between average, total value and number of data values."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "assessment": {
+    "purpose": "Assess pupils' attainment in mathematics at the end of primary education with respect to the objectives of the Primary Mathematics syllabus.",
+    "objectives": [
+      {
+        "id": "AO1",
+        "description": "Recall mathematical facts, concepts, rules and formulae, and perform straightforward computations and algebraic procedures."
+      },
+      {
+        "id": "AO2",
+        "description": "Interpret information and understand and apply mathematical concepts and skills in a variety of contexts."
+      },
+      {
+        "id": "AO3",
+        "description": "Reason mathematically, analyse information and make inferences, and select appropriate strategies to solve problems."
+      }
+    ],
+    "exam_format": {
+      "total_questions": 45,
+      "total_marks": 100,
+      "total_duration_minutes": 150,
+      "scheduled_same_day": true,
+      "break_between_papers": true,
+      "papers": [
+        {
+          "paper": 1,
+          "duration_minutes": 70,
+          "calculator_allowed": false,
+          "total_marks": 50,
+          "booklets": [
+            {
+              "booklet": "A",
+              "item_type": "multiple-choice",
+              "groups": [
+                {
+                  "questions": 10,
+                  "marks_each": 1
+                },
+                {
+                  "questions": 8,
+                  "marks_each": 2
+                }
+              ],
+              "total_marks": 26
+            },
+            {
+              "booklet": "B",
+              "item_type": "short-answer",
+              "groups": [
+                {
+                  "questions": 12,
+                  "marks_each": 2
+                }
+              ],
+              "total_marks": 24
+            }
+          ]
+        },
+        {
+          "paper": 2,
+          "duration_minutes": 80,
+          "calculator_allowed": true,
+          "total_marks": 50,
+          "booklets": [
+            {
+              "booklet": "A",
+              "groups": [
+                {
+                  "item_type": "short-answer",
+                  "questions": 5,
+                  "marks_each": 2,
+                  "total_marks": 10
+                },
+                {
+                  "item_type": "structured-or-long-answer",
+                  "questions": 10,
+                  "marks_each": [
+                    3,
+                    4,
+                    5
+                  ],
+                  "total_marks": 40
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "response_and_marking_rules": {
+      "multiple_choice": "Four options are provided and only one is correct.",
+      "short_answer": "A question may have one or two parts. For a one-part 2-mark question, an incorrect answer may receive 1 mark for a correct method.",
+      "structured_or_long_answer": "The candidate must show the method of solution clearly and write the answer in the space provided.",
+      "units": "When a required unit is provided, the candidate gives the answer in that unit.",
+      "paperloop_ui_requirement": "Keep the working canvas available for every non-multiple-choice item and capture it only when the student submits the typed final answer."
+    }
+  }
+}
+

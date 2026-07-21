@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "retrieved_on": "2026-07-21",
+  "sources": [
+    {
+      "id": "moe-primary-mathematics-2021-oct-2025",
+      "authority": "Singapore Ministry of Education",
+      "document_type": "curriculum_syllabus",
+      "title": "2021 Primary Mathematics Syllabus (Primary 1 to Primary 6)",
+      "revision": "October 2025",
+      "applies_to_primary_6_from": 2026,
+      "url": "https://www.moe.gov.sg/-/media/files/primary/2021-primary-mathematics-syllabus-p1-to-p6-updated-october-2025.pdf",
+      "local_file": null,
+      "access_note": "The official URL is retained as the source of truth. MOE's browser verification prevented an automated local PDF download."
+    },
+    {
+      "id": "seab-psle-mathematics-0008-from-2026",
+      "authority": "Singapore Examinations and Assessment Board",
+      "document_type": "examination_syllabus",
+      "title": "PSLE Mathematics (0008) - For Examination from 2026",
+      "effective_from": 2026,
+      "url": "https://www.seab.gov.sg/files/PSLE%20Syllabus%20documents/2026%20PSLE/0008_y26_sy.pdf",
+      "local_file": null,
+      "access_note": "The official URL is retained as the source of truth; the structured examination rules were verified against the official document."
+    }
+  ]
+}
+
