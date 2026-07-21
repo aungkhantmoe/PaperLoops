@@ -124,12 +124,14 @@ function Assessment({ onComplete }: { onComplete: () => void }) {
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
   const [answers, setAnswers] = useState<string[]>([]);
+  const [hasWorking, setHasWorking] = useState(false);
   const q = assessmentQuestions[index];
   const continueAssessment = () => {
-    if (!answer.trim()) return;
+    if (!answer.trim() || !hasWorking) return;
     const next = [...answers, answer.trim()];
     setAnswers(next);
     setAnswer("");
+    setHasWorking(false);
     if (index === assessmentQuestions.length - 1) onComplete();
     else setIndex(index + 1);
   };
@@ -152,7 +154,7 @@ function Assessment({ onComplete }: { onComplete: () => void }) {
           <span>Show your working</span>
           <small>Use a mouse, touchscreen, or stylus.</small>
         </div>
-        <HandwritingPad key={index} compact />
+        <HandwritingPad key={index} compact onInkChange={setHasWorking} />
         <label className="assessment-final-answer">
           <span>Final answer</span>
           <div><input value={answer} onChange={(event) => setAnswer(event.target.value)} inputMode="text" placeholder="Type only your final answer" />{q.unit && <em>{q.unit}</em>}</div>
@@ -161,10 +163,10 @@ function Assessment({ onComplete }: { onComplete: () => void }) {
           <button
             className="secondary-button"
             disabled={index === 0}
-            onClick={() => { setIndex(index - 1); setAnswer(answers[index - 1] ?? ""); setAnswers(answers.slice(0, -1)); }}
+            onClick={() => { setIndex(index - 1); setAnswer(answers[index - 1] ?? ""); setAnswers(answers.slice(0, -1)); setHasWorking(false); }}
           >Back</button>
           <span>Your working helps us understand how you think.</span>
-          <button className="primary-button" disabled={!answer.trim()} onClick={continueAssessment}>
+          <button className="primary-button" disabled={!answer.trim() || !hasWorking} onClick={continueAssessment}>
             {index === 9 ? "See my tier" : "Next question"}
           </button>
         </div>
@@ -287,7 +289,7 @@ function Dashboard({
 
 type Stroke = { tool: "pen" | "eraser"; points: Array<{ x: number; y: number }> };
 
-function HandwritingPad({ compact = false }: { compact?: boolean }) {
+function HandwritingPad({ compact = false, onInkChange }: { compact?: boolean; onInkChange?: (hasInk: boolean) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [tool, setTool] = useState<"pen" | "eraser">("pen");
   const [strokes, setStrokes] = useState<Stroke[]>([]);
@@ -321,6 +323,7 @@ function HandwritingPad({ compact = false }: { compact?: boolean }) {
   }, [strokes]);
 
   useEffect(() => { render(); }, [render]);
+  useEffect(() => { onInkChange?.(strokes.length > 0); }, [strokes.length, onInkChange]);
   useEffect(() => {
     const onResize = () => render();
     window.addEventListener("resize", onResize);
@@ -369,6 +372,7 @@ function HandwritingPad({ compact = false }: { compact?: boolean }) {
 
 function Practice({ onSubmit, onBack }: { onSubmit: () => void; onBack: () => void }) {
   const [answer, setAnswer] = useState("");
+  const [hasWorking, setHasWorking] = useState(false);
   return (
     <main className="practice-shell">
       <header className="practice-header"><Logo /><div className="practice-progress"><span>Question 3 of 5</span><div><i /></div></div><button className="text-button" onClick={onBack}>Save & exit</button></header>
@@ -379,8 +383,8 @@ function Practice({ onSubmit, onBack }: { onSubmit: () => void; onBack: () => vo
             <h1>A water tank was <b>3/5</b> full. After 24 litres of water were added, it was <b>3/4</b> full. What was the capacity of the tank?</h1>
             <button className="hint-link">Need a small hint?</button>
           </div>
-          <HandwritingPad />
-          <div className="final-answer-bar"><label>Final answer <div><input value={answer} onChange={(e) => setAnswer(e.target.value)} inputMode="decimal" placeholder="Type your answer" /><span>litres</span></div></label><button className="primary-button" disabled={!answer} onClick={onSubmit}>Check my work</button></div>
+          <HandwritingPad onInkChange={setHasWorking} />
+          <div className="final-answer-bar"><label>Final answer <div><input value={answer} onChange={(e) => setAnswer(e.target.value)} inputMode="decimal" placeholder="Type your answer" /><span>litres</span></div></label><button className="primary-button" disabled={!answer.trim() || !hasWorking} onClick={onSubmit}>Check my work</button></div>
         </section>
         <aside className="practice-side">
           <span className="eyebrow">Today’s focus</span><h2>Fractions</h2>
@@ -398,6 +402,7 @@ function Practice({ onSubmit, onBack }: { onSubmit: () => void; onBack: () => vo
 
 function PracticeFeedback({ onLevelUp }: { onLevelUp: () => void }) {
   const [exitAnswer, setExitAnswer] = useState("");
+  const [hasExitWorking, setHasExitWorking] = useState(false);
   return (
     <main className="feedback-shell">
       <header className="practice-header"><Logo /><div className="quiet-badge">Question review</div><span /></header>
@@ -419,8 +424,8 @@ function PracticeFeedback({ onLevelUp }: { onLevelUp: () => void }) {
         </div>
         <section className="exit-ticket">
           <div><span className="eyebrow">Quick confidence check</span><h2>If 2/9 of a container is 18 litres, what is its full capacity?</h2></div>
-          <HandwritingPad compact />
-          <div className="exit-answer"><label>Final answer</label><input placeholder="Type your answer" value={exitAnswer} onChange={(event) => setExitAnswer(event.target.value)} /><span>litres</span><button className="success-button" disabled={!exitAnswer.trim()} onClick={onLevelUp}>Finish set</button></div>
+          <HandwritingPad compact onInkChange={setHasExitWorking} />
+          <div className="exit-answer"><label>Final answer</label><input placeholder="Type your answer" value={exitAnswer} onChange={(event) => setExitAnswer(event.target.value)} /><span>litres</span><button className="success-button" disabled={!exitAnswer.trim() || !hasExitWorking} onClick={onLevelUp}>Finish set</button></div>
         </section>
       </div>
     </main>
@@ -448,6 +453,7 @@ function ExamReady({ attempts, onStart, onBack }: { attempts: number; onStart: (
 function Exam({ onSubmit }: { onSubmit: () => void }) {
   const [question, setQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [working, setWorking] = useState<Record<number, boolean>>({});
   const questions = [
     "A shop reduced the price of a bag from $80 to $68. What was the percentage discount?",
     "The average mass of 5 parcels was 3.2 kg. A sixth parcel of mass 4.4 kg was added. Find the new average mass.",
@@ -463,9 +469,9 @@ function Exam({ onSubmit }: { onSubmit: () => void }) {
         <section className="exam-question">
           <div className="exam-question-meta"><span>Question {question + 1}</span><span>{question === 3 ? "5 marks" : "3 marks"}</span></div>
           <h1>{questions[question] ?? "This question will be available in the complete paper."}</h1>
-          <HandwritingPad compact />
+          <HandwritingPad key={question} compact onInkChange={(hasInk) => setWorking((current) => current[question] === hasInk ? current : { ...current, [question]: hasInk })} />
           <label className="exam-final-answer">Final answer <div><input value={answers[question] ?? ""} onChange={(e) => setAnswers({ ...answers, [question]: e.target.value })} placeholder="Enter your answer" /><span>{question === 0 ? "%" : ""}</span></div></label>
-          <div className="exam-controls"><button className="secondary-button" disabled={question === 0} onClick={() => setQuestion(question - 1)}>Previous</button>{question < 4 ? <button className="primary-button" onClick={() => setQuestion(question + 1)}>Next question</button> : <button className="submit-exam-button" onClick={onSubmit}>Submit exam</button>}</div>
+          <div className="exam-controls"><button className="secondary-button" disabled={question === 0} onClick={() => setQuestion(question - 1)}>Previous</button>{question < 4 ? <button className="primary-button" disabled={!answers[question]?.trim() || !working[question]} onClick={() => setQuestion(question + 1)}>Next question</button> : <button className="submit-exam-button" disabled={!answers[question]?.trim() || !working[question]} onClick={onSubmit}>Submit exam</button>}</div>
         </section>
       </div>
     </main>
