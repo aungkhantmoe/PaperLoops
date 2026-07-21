@@ -16,16 +16,16 @@ type Screen =
 type Mode = "normal" | "exam";
 
 const assessmentQuestions = [
-  { question: "What is 3,408 + 2,795?", options: ["6,103", "6,203", "6,293", "5,203"], answer: 1 },
-  { question: "Which fraction is equivalent to 3/4?", options: ["6/12", "9/12", "8/16", "12/20"], answer: 1 },
-  { question: "Find 25% of 320.", options: ["40", "64", "80", "95"], answer: 2 },
-  { question: "A rectangle is 9 cm long and 4 cm wide. Find its area.", options: ["13 cm²", "26 cm²", "36 cm²", "72 cm²"], answer: 2 },
-  { question: "Express 2.35 as a mixed number.", options: ["2 7/20", "2 3/5", "2 35/10", "2 1/35"], answer: 0 },
-  { question: "The ratio of red to blue marbles is 2 : 5. There are 35 blue marbles. How many are red?", options: ["12", "14", "17", "70"], answer: 1 },
-  { question: "A bus left at 14:35 and travelled for 1 h 50 min. When did it arrive?", options: ["15:85", "16:15", "16:25", "17:25"], answer: 2 },
-  { question: "Round 48.736 to the nearest tenth.", options: ["48.7", "48.73", "48.74", "49.0"], answer: 0 },
-  { question: "5 identical books cost $42.50. What is the cost of 8 books?", options: ["$68.00", "$64.00", "$70.50", "$85.00"], answer: 0 },
-  { question: "A tank was 3/5 full. After 24 L were added, it was 3/4 full. What is its capacity?", options: ["96 L", "120 L", "144 L", "160 L"], answer: 3 },
+  { question: "What is 3,408 + 2,795?", unit: "" },
+  { question: "Write one fraction that is equivalent to 3/4.", unit: "" },
+  { question: "Find 25% of 320.", unit: "" },
+  { question: "A rectangle is 9 cm long and 4 cm wide. Find its area.", unit: "cm²" },
+  { question: "Express 2.35 as a mixed number.", unit: "" },
+  { question: "The ratio of red to blue marbles is 2 : 5. There are 35 blue marbles. How many red marbles are there?", unit: "marbles" },
+  { question: "A bus left at 14:35 and travelled for 1 h 50 min. At what time did it arrive?", unit: "" },
+  { question: "Round 48.736 to the nearest tenth.", unit: "" },
+  { question: "Five identical books cost $42.50. What is the cost of eight books?", unit: "dollars" },
+  { question: "A tank was 3/5 full. After 24 L were added, it was 3/4 full. What is its capacity?", unit: "litres" },
 ];
 
 const tourSteps = [
@@ -38,7 +38,7 @@ const tourSteps = [
   {
     eyebrow: "Your first 10 questions",
     title: "Find your starting tier.",
-    copy: "A short placement check helps us understand your strengths. It is not graded, and you can take your time.",
+    copy: "A short placement check lets you show your working for every question. Only your final answer is typed, and it is not graded.",
     visual: "tier",
   },
   {
@@ -122,14 +122,14 @@ function Tour({ onFinish }: { onFinish: () => void }) {
 
 function Assessment({ onComplete }: { onComplete: () => void }) {
   const [index, setIndex] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [answers, setAnswers] = useState<number[]>([]);
+  const [answer, setAnswer] = useState("");
+  const [answers, setAnswers] = useState<string[]>([]);
   const q = assessmentQuestions[index];
   const continueAssessment = () => {
-    if (selected === null) return;
-    const next = [...answers, selected];
+    if (!answer.trim()) return;
+    const next = [...answers, answer.trim()];
     setAnswers(next);
-    setSelected(null);
+    setAnswer("");
     if (index === assessmentQuestions.length - 1) onComplete();
     else setIndex(index + 1);
   };
@@ -140,7 +140,7 @@ function Assessment({ onComplete }: { onComplete: () => void }) {
         <Logo />
         <div className="quiet-badge">Placement check · Not graded</div>
       </header>
-      <section className="assessment-card">
+      <section className="assessment-card assessment-writing-card">
         <div className="assessment-meta">
           <span>Question {index + 1} of 10</span>
           <span>{Math.round(((index + 1) / 10) * 100)}% complete</span>
@@ -148,25 +148,23 @@ function Assessment({ onComplete }: { onComplete: () => void }) {
         <div className="progress-track"><span style={{ width: `${((index + 1) / 10) * 100}%` }} /></div>
         <span className="topic-chip">Mixed skills</span>
         <h1>{q.question}</h1>
-        <div className="answer-options">
-          {q.options.map((option, optionIndex) => (
-            <button
-              key={option}
-              className={selected === optionIndex ? "answer-option selected" : "answer-option"}
-              onClick={() => setSelected(optionIndex)}
-            >
-              <span>{String.fromCharCode(65 + optionIndex)}</span>{option}
-            </button>
-          ))}
+        <div className="assessment-working-label">
+          <span>Show your working</span>
+          <small>Use a mouse, touchscreen, or stylus.</small>
         </div>
+        <HandwritingPad key={index} compact />
+        <label className="assessment-final-answer">
+          <span>Final answer</span>
+          <div><input value={answer} onChange={(event) => setAnswer(event.target.value)} inputMode="text" placeholder="Type only your final answer" />{q.unit && <em>{q.unit}</em>}</div>
+        </label>
         <div className="assessment-footer">
           <button
             className="secondary-button"
             disabled={index === 0}
-            onClick={() => { setIndex(index - 1); setSelected(answers[index - 1] ?? null); setAnswers(answers.slice(0, -1)); }}
+            onClick={() => { setIndex(index - 1); setAnswer(answers[index - 1] ?? ""); setAnswers(answers.slice(0, -1)); }}
           >Back</button>
-          <span>Choose the answer that seems best.</span>
-          <button className="primary-button" disabled={selected === null} onClick={continueAssessment}>
+          <span>Your working helps us understand how you think.</span>
+          <button className="primary-button" disabled={!answer.trim()} onClick={continueAssessment}>
             {index === 9 ? "See my tier" : "Next question"}
           </button>
         </div>
@@ -399,6 +397,7 @@ function Practice({ onSubmit, onBack }: { onSubmit: () => void; onBack: () => vo
 }
 
 function PracticeFeedback({ onLevelUp }: { onLevelUp: () => void }) {
+  const [exitAnswer, setExitAnswer] = useState("");
   return (
     <main className="feedback-shell">
       <header className="practice-header"><Logo /><div className="quiet-badge">Question review</div><span /></header>
@@ -418,7 +417,11 @@ function PracticeFeedback({ onLevelUp }: { onLevelUp: () => void }) {
             <div className="misconception-chip"><span>We noticed</span><b>Subtracting unlike fractions</b></div>
           </aside>
         </div>
-        <section className="exit-ticket"><div><span className="eyebrow">Quick confidence check</span><h2>If 2/9 of a container is 18 litres, what is its full capacity?</h2></div><div className="exit-answer"><input placeholder="Answer" defaultValue="81" /><span>litres</span><button className="success-button" onClick={onLevelUp}>Finish set</button></div></section>
+        <section className="exit-ticket">
+          <div><span className="eyebrow">Quick confidence check</span><h2>If 2/9 of a container is 18 litres, what is its full capacity?</h2></div>
+          <HandwritingPad compact />
+          <div className="exit-answer"><label>Final answer</label><input placeholder="Type your answer" value={exitAnswer} onChange={(event) => setExitAnswer(event.target.value)} /><span>litres</span><button className="success-button" disabled={!exitAnswer.trim()} onClick={onLevelUp}>Finish set</button></div>
+        </section>
       </div>
     </main>
   );
