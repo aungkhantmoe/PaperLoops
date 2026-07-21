@@ -310,7 +310,7 @@ function HandwritingPad({ compact = false, onInkChange }: { compact?: boolean; o
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     ctx.clearRect(0, 0, rect.width, rect.height);
     [...strokes, ...(activeStroke.current ? [activeStroke.current] : [])].forEach((stroke) => {
-      if (stroke.points.length < 2) return;
+      if (!stroke?.points || stroke.points.length < 2) return;
       ctx.beginPath();
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -333,6 +333,23 @@ function HandwritingPad({ compact = false, onInkChange }: { compact?: boolean; o
   const pointFromEvent = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  };
+
+  const finishStroke = () => {
+    drawing.current = false;
+    const completedStroke = activeStroke.current;
+    activeStroke.current = null;
+    if (completedStroke && completedStroke.points.length > 1) {
+      setStrokes((current) => [...current, completedStroke]);
+    } else {
+      render();
+    }
+  };
+
+  const cancelStroke = () => {
+    drawing.current = false;
+    activeStroke.current = null;
+    render();
   };
 
   return (
@@ -359,11 +376,8 @@ function HandwritingPad({ compact = false, onInkChange }: { compact?: boolean; o
             activeStroke.current.points.push(pointFromEvent(event));
             render();
           }}
-          onPointerUp={() => {
-            drawing.current = false;
-            if (activeStroke.current) setStrokes((current) => [...current, activeStroke.current as Stroke]);
-            activeStroke.current = null;
-          }}
+          onPointerUp={finishStroke}
+          onPointerCancel={cancelStroke}
         />
       </div>
     </div>
